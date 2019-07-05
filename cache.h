@@ -1,6 +1,8 @@
 #ifndef INCLUDED_CACHE
 #define INCLUDED_CACHE
 
+#include "request_types.h"
+
 #include <chrono>
 #include <string>
 #include <unordered_map>
@@ -10,8 +12,6 @@ namespace Oso {
 
 class TTLCache {
   public:
-    using Duration  = std::chrono::duration<int>; // Duration int seconds
-
     /**
      * @brief constructor optionally takes a default time to live for all values in the cache
      * @param defaultTtlSeconds an optional default time to live, specified in seconds.
@@ -51,11 +51,17 @@ class TTLCache {
         bool        expires;            // true if this value has an expiration date
     };
 
+    /**
+     * @brief helper function to determine if a CacheValue has expired
+     */
+    bool expired(const CacheValue& val) const;
+
     // cache maps request strings to values with a time at which the value becomes invalid
     using CacheType = std::unordered_map<std::string, CacheValue>;
     using CacheTypeVal = CacheType::value_type;
-    CacheType   d_cache;
-    Duration    d_defaultTtl;
+    CacheType                       d_cache;
+    std::shared_ptr<RequestTypes>   d_requestTypes;
+    Duration                        d_defaultTtl;
 };
 
 } // namespace Oso

@@ -3,13 +3,14 @@
 
 #include "cache.h"
 #include "external_request.h"
+#include "request_types.h"
 
 namespace Oso {
 
 class CachedRequest : public ExternalRequest {
   public:
 
-    CachedRequest(const std::shared_ptr<TTLCache>& cache);
+    CachedRequest(const std::shared_ptr<TTLCache>& cache, const std::shared_ptr<RequestTypes>& rTypes);
 
     /**
      * @brief makes external request to server to get data and caches the value
@@ -19,7 +20,8 @@ class CachedRequest : public ExternalRequest {
     std::string query(const Data& requestData) override;
 
   private:
-    std::shared_ptr<TTLCache> d_cache;
+    std::shared_ptr<TTLCache>       d_cache;
+    std::shared_ptr<RequestTypes>   d_request_types;
 };
 
 } // namespace Oso

@@ -5,8 +5,8 @@
 namespace Oso {
 
 namespace {
-std::chrono::time_point<std::chrono::system_clock, TTLCache::Duration> now() {
-    return std::chrono::time_point_cast<TTLCache::Duration>(std::chrono::system_clock::now());
+std::chrono::time_point<std::chrono::system_clock, Duration> now() {
+    return std::chrono::time_point_cast<Duration>(std::chrono::system_clock::now());
 }
 } // anonymous namespace
 
@@ -32,7 +32,7 @@ std::pair<std::string, bool> TTLCache::get(const std::string& key)
     std::pair<std::string, bool> ret;
 
     auto it = d_cache.find(key);
-    if (it == d_cache.end()) {
+    if (it == d_cache.end() || expired(it->second)) {
         ret.second = false;
     } else {
         ret.second = true;
@@ -48,6 +48,11 @@ TTLCache::CacheValue::CacheValue(const std::string& v, Duration d)
 , expires{d.count() ? true : false}
 {
     // noop
+}
+
+bool TTLCache::expired(const CacheValue& val) const
+{
+    return val.expires && val.expiration < now();
 }
 
 } // namespace Oso
