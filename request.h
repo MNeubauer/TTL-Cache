@@ -1,6 +1,7 @@
 #ifndef INCLUDED_REQUEST
 #define INCLUDED_REQUEST
 
+#include <future>
 #include <string>
 
 namespace Oso {
@@ -25,9 +26,9 @@ class Request {
      * @brief fetches a request string and returns the value.
      *        If the request fails, an exception may be thrown.
      * @param requestString request that will be fulfilled by this Request Object
-     * @return the token or value that is being requested
+     * @return a future to the token or value that is being requested
      */
-    virtual std::string query(const Data& requestData) = 0;
+    virtual std::future<std::string> query(const Data& request_data) = 0;
 };
 
 } // namespace Oso

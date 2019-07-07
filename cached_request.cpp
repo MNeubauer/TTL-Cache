@@ -10,7 +10,13 @@ CachedRequest::CachedRequest(const std::shared_ptr<TTLCache>& cache,
     // noop
 }
 
-std::string CachedRequest::query(const Data& request_data)
+std::future<std::string> CachedRequest::query(const Data& request_data)
+{
+    return std::async(&CachedRequest::query_impl, *this, request_data);
+}
+
+
+std::string CachedRequest::query_impl(const Data& request_data)
 {
     // check the cache first
     std::string key = ExternalRequest::create_query_str(request_data);
@@ -20,7 +26,8 @@ std::string CachedRequest::query(const Data& request_data)
     }
 
     // external fetch for cache miss
-    std::string value = ExternalRequest::query(request_data);
+    std::future<std::string> value_promise = ExternalRequest::query(request_data);
+    std::string value = value_promise.get();
 
     // cache
     d_cache->set(key, value, d_request_types->get_time_to_live(request_data.d_request_type));

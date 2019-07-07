@@ -50,7 +50,7 @@ Oso::Request::Data createRandomReq()
 void makeTimedCall(Oso::Request& r, const Oso::Request::Data& data, const std::string& requester)
 {
     auto start{std::chrono::system_clock::now()};
-    std::string token{r.query(data)};
+    std::string token{r.query(data).get()};
     auto duration = std::chrono::system_clock::now() - start;
 
     std::cout << "Token received token=" 

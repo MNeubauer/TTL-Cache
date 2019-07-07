@@ -17,11 +17,16 @@ class CachedRequest : public ExternalRequest {
      *        throws an exception if this module cannot connect to the server (on a cache miss)
      * @copydoc Request::query
      */
-    std::string query(const Data& requestData) override;
+    std::future<std::string> query(const Data& request_data) override;
 
   private:
     std::shared_ptr<TTLCache>       d_cache;
     std::shared_ptr<RequestTypes>   d_request_types;
+
+    /**
+     * @copydoc CachedRequest::query
+     */
+    std::string query_impl(const Data& requestData);
 };
 
 } // namespace Oso
