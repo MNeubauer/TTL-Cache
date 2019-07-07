@@ -8,14 +8,14 @@
             "args": [
                 "-std=c++14",
                 "-stdlib=libc++",
-                "usage.cpp",
                 "-o",
                 "usage.out",
-                "request.cpp",
-                "external_request.cpp",
-                "cache.cpp",
-                "cached_request.cpp",
-                "request_types.cpp",
+                "src/usage.cpp",
+                "src/request.cpp",
+                "src/external_request.cpp",
+                "src/cache.cpp",
+                "src/cached_request.cpp",
+                "src/request_types.cpp",
                 "--debug"
             ],
             "group": {
