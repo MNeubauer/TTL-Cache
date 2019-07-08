@@ -4,19 +4,9 @@
         {
             "label": "Build with Clang",
             "type": "shell",
-            "command": "clang++",
+            "command": "make",
             "args": [
-                "-std=c++14",
-                "-stdlib=libc++",
-                "-o",
-                "usage.out",
-                "src/usage.cpp",
-                "src/request.cpp",
-                "src/external_request.cpp",
-                "src/cache.cpp",
-                "src/cached_request.cpp",
-                "src/request_types.cpp",
-                "--debug"
+                "build",
             ],
             "group": {
                 "kind": "build",

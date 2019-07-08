@@ -9,10 +9,10 @@ using Durations = std::unordered_map<std::string, Duration>;
 
 namespace {
 const Durations::value_type durations[] = {
-        Durations::value_type{"getToken", Duration{1}}, 
-        Durations::value_type{"getUserAuthentication", Duration{2}},
-        Durations::value_type{"verifyUser", Duration{2}},
-        Durations::value_type{"verifyThirdPary", Duration{60}}
+        Durations::value_type{"1 Second Expiry", Duration{1}}, 
+        Durations::value_type{"2 Second Expiry", Duration{2}},
+        Durations::value_type{"5 Second Expiry", Duration{5}},
+        Durations::value_type{"60 Second Expiry", Duration{60}}
 };
 } // anonymous namespace
 
@@ -35,13 +35,6 @@ Duration RequestTypes::get_time_to_live(const std::string& req_type) const
         std::cout << "unkown request_type=" << req_type << " duration=" << 1 << std::endl;
         return Duration{1};
     }
-
-    std::cout << "found request_type=" 
-              << req_type
-              << " duration="
-              << it->second.count() 
-              << std::endl;
-
     return it->second;
 }
 
