@@ -1,5 +1,6 @@
 #include <chrono>
 #include <ctime>
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -32,44 +33,63 @@ void explanatory_usage()
     // slow call without cache
     Oso::Request::Data data = createReqWithType(ONE_SEC_REQ_TYPE);
 
-    std::cout << "Making a query sequentially without a cache" << std::endl;
-    makeTimedCall(*externalReq, data);
-    makeTimedCall(*externalReq, data);
-    makeTimedCall(*externalReq, data);
+    try {
+        std::cout << "Making a query sequentially without a cache" << std::endl;
+        makeTimedCall(*externalReq, data);
+        makeTimedCall(*externalReq, data);
+        makeTimedCall(*externalReq, data);
 
-    std::cout << "Now trying sequentially with a cache" << std::endl;
-    makeTimedCall(*cachedReq, data);
-    makeTimedCall(*cachedReq, data);
-    makeTimedCall(*cachedReq, data);
+        std::cout << "Now trying sequentially with a cache" << std::endl;
+        makeTimedCall(*cachedReq, data);
+        makeTimedCall(*cachedReq, data);
+        makeTimedCall(*cachedReq, data);
+    }
+    catch(std::runtime_error& err) {
+        std::cout << "Caught a runtime error '" << err.what() << "' moving on to next block" << std::endl;
+    }
 
-    std::cout << "Making a different query async without a cache" << std::endl;
-    makeTimedAsyncCalls(*externalReq, SIXTY_SEC_REQ_TYPE);
+    try {
+        std::cout << "Making a different query async without a cache" << std::endl;
+        makeTimedAsyncCalls(*externalReq, SIXTY_SEC_REQ_TYPE);
 
-    std::cout << "Making a different query async WITH a cache" << std::endl;
-    makeTimedAsyncCalls(*cachedReq, SIXTY_SEC_REQ_TYPE);
+        std::cout << "Making a different query async WITH a cache" << std::endl;
+        makeTimedAsyncCalls(*cachedReq, SIXTY_SEC_REQ_TYPE);
+    }
+    catch(std::runtime_error& err) {
+        std::cout << "Caught a runtime error '" << err.what() << "' moving on to next block" << std::endl;
+    }
 
     std::cout << "That time didn't make much of a difference, but this time, we need to retrieve that same token!" << std::endl;
 
-    std::cout << "Without the cache..." << std::endl;
-    makeTimedAsyncCalls(*externalReq, SIXTY_SEC_REQ_TYPE);
-    std::cout << "With the cache..." << std::endl;
-    makeTimedAsyncCalls(*cachedReq, SIXTY_SEC_REQ_TYPE);
+    try {
+        std::cout << "Without the cache..." << std::endl;
+        makeTimedAsyncCalls(*externalReq, SIXTY_SEC_REQ_TYPE);
+        std::cout << "With the cache..." << std::endl;
+        makeTimedAsyncCalls(*cachedReq, SIXTY_SEC_REQ_TYPE);
+    }
+    catch(std::runtime_error& err) {
+        std::cout << "Caught a runtime error '" << err.what() << "' moving on to next block" << std::endl;
+    }
 }
 
 void somewhat_realistic_usage(std::unique_ptr<Oso::Request> generic_requester)
 {
-    int number_of_times_some_work_must_be_done = 2;
-    Oso::Request::Data req_data = createReqWithType(SIXTY_SEC_REQ_TYPE);
-    for(int i = 0; i < number_of_times_some_work_must_be_done; ++i) {
-        // step 1, call async request
-        std::future<std::string> fut = generic_requester->query(req_data);
-        // step 2, do other heavy lifting
-        std::this_thread::sleep_for(std::chrono::milliseconds{rand() % 1000});
-        // step 3, get future and do something with it.
-        std::string token = fut.get();
-        // do_something_with_token();
+    try {
+        int number_of_times_some_work_must_be_done = 2;
+        Oso::Request::Data req_data = createReqWithType(SIXTY_SEC_REQ_TYPE);
+        for(int i = 0; i < number_of_times_some_work_must_be_done; ++i) {
+            // step 1, call async request
+            std::future<std::string> fut = generic_requester->query(req_data);
+            // step 2, do other heavy lifting
+            std::this_thread::sleep_for(std::chrono::milliseconds{rand() % 1000});
+            // step 3, get future and do something with it.
+            std::string token = fut.get();
+            // do_something_with_token();
+        }
     }
-
+    catch(std::runtime_error& err) {
+        std::cout << "Caught a runtime error '" << err.what() << "' and cannot proceed." << std::endl;
+    }
 }
 
 int main() {

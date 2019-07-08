@@ -10,7 +10,9 @@ namespace Oso {
 class CachedRequest : public ExternalRequest {
   public:
 
-    CachedRequest(const std::shared_ptr<TTLCache>& cache, const std::shared_ptr<RequestTypes>& rTypes);
+    CachedRequest(const std::shared_ptr<TTLCache>& cache,
+                  const std::shared_ptr<RequestTypes>& rTypes,
+                  int max_fetch_retries = 0);
 
     /**
      * @brief makes external request to server to get data and caches the value
@@ -22,6 +24,7 @@ class CachedRequest : public ExternalRequest {
   private:
     std::shared_ptr<TTLCache>       d_cache;
     std::shared_ptr<RequestTypes>   d_request_types;
+    int                             d_max_attempts; // 1 more than # of retries
 
     /**
      * @copydoc CachedRequest::query

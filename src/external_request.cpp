@@ -1,4 +1,5 @@
 #include <chrono> // std::chrono::microseconds
+#include <exception>
 #include <future>
 #include <sstream>
 #include <stdlib.h>
@@ -42,7 +43,14 @@ std::string ExternalRequest::create_query_str(const Data& data) const
 std::string ExternalRequest::fetch_token_from_server(const std::string& query_str) const
 {
     // request takes somewhere between 1 and 3 seconds
-    std::this_thread::sleep_for(std::chrono::microseconds{rand() % 2000000 + 1000000});
+    std::chrono::milliseconds ms{rand() % 2000 + 1000};
+    std::this_thread::sleep_for(ms);
+
+    // throw randomly
+    if (0 == ms.count() % 10) {
+        throw std::runtime_error("Could not fetch token from server!");
+    }
+
     return create_random_token();
 }
 
