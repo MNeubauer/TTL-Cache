@@ -24,11 +24,12 @@ const std::string SIXTY_SEC_REQ_TYPE = "60 Second Expiry";
 void explanatory_usage()
 {
     // setup
-    std::unique_ptr<Oso::Request> externalReq{new Oso::ExternalRequest};
+    std::shared_ptr<Oso::Request> externalReq{new Oso::ExternalRequest};
     constexpr int OneDayInSeconds = 60 * 60 * 24;
     std::shared_ptr<Oso::TTLCache> cache{new Oso::TTLCache{Oso::Duration{OneDayInSeconds}}};
-    std::shared_ptr<Oso::RequestTypes> rqs{new Oso::RequestTypes};
-    std::unique_ptr<Oso::Request> cachedReq{new Oso::CachedRequest{cache, rqs}};
+    std::shared_ptr<Oso::RequestTypes> request_types{new Oso::RequestTypes};
+    int retries = 2;
+    std::shared_ptr<Oso::Request> cachedReq{new Oso::CachedRequest{cache, externalReq, request_types, retries}};
 
     // slow call without cache
     Oso::Request::Data data = createReqWithType(ONE_SEC_REQ_TYPE);
@@ -72,7 +73,7 @@ void explanatory_usage()
     }
 }
 
-void somewhat_realistic_usage(std::unique_ptr<Oso::Request> generic_requester)
+void somewhat_realistic_usage(std::shared_ptr<Oso::Request> generic_requester)
 {
     try {
         int number_of_times_some_work_must_be_done = 2;
@@ -98,8 +99,10 @@ int main() {
 
     std::shared_ptr<Oso::TTLCache> cache{new Oso::TTLCache{}};
     std::shared_ptr<Oso::RequestTypes> rqs{new Oso::RequestTypes};
-    std::unique_ptr<Oso::Request> request{new Oso::CachedRequest{cache, rqs}};
-    somewhat_realistic_usage(std::move(request));
+    std::shared_ptr<Oso::Request> externalReq{new Oso::ExternalRequest};
+    int num_retries = 2;
+    std::shared_ptr<Oso::Request> request{new Oso::CachedRequest{cache, externalReq, rqs, num_retries}};
+    somewhat_realistic_usage(request);
 
     return 0;
 }

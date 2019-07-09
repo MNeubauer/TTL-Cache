@@ -16,12 +16,10 @@ class ExternalRequest : public Request {
      */
     std::future<std::string> query(const Data& request_data) override;
 
-  protected:
     /**
-     * @brief helper that creates the actual request for this external resource
-     *        private as the client has no need to know about how to construct this string
+     * @copydoc Request::create_query_str
      */
-    std::string create_query_str(const Data& request_data) const;
+    std::string create_query_str(const Data& request_data) const override;
 
   private:
 

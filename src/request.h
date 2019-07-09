@@ -29,6 +29,12 @@ class Request {
      * @return a future to the token or value that is being requested
      */
     virtual std::future<std::string> query(const Data& request_data) = 0;
+
+    /**
+     * @brief helper that creates the actual request for this external resource
+     */
+    virtual std::string create_query_str(const Data& request_data) const = 0;
+
 };
 
 } // namespace Oso
